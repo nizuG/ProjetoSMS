@@ -1,0 +1,126 @@
+* {
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top left, #0f172a, #020617);
+  color: #e5e7eb;
+  display: flex;
+  overflow: hidden; /* evita scroll horizontal do body */
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 70px;
+  height: 100vh; /* ocupa a altura total da tela */
+  overflow: auto; /* scroll interno só do menu se necessário */
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(14px);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  padding-top: 90px;
+  transition: width 0.35s ease;
+  position: fixed; /* fixa o menu */
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+
+.sidebar:hover {
+  width: 260px;
+}
+
+/* LOGO */
+.logo {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding-left: 24px;
+  margin-bottom: 40px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar:hover .logo {
+  opacity: 1;
+}
+
+/* MENU */
+.menu {
+  list-style: none;
+}
+
+/* LINKS */
+.menu > li > a {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  color: #94a3b8;
+  text-decoration: none;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.menu a svg {
+  min-width: 22px;
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+}
+
+/* TEXTO */
+.menu a span {
+  margin-left: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition: 0.25s ease;
+}
+
+.sidebar:hover .menu a span {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* HOVER ITEM */
+.menu > li > a:hover {
+  background: rgba(255,255,255,0.05);
+  color: #e5e7eb;
+}
+
+/* SUBMENU */
+.submenu {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  margin-left: 30px;
+  transition: max-height 0.35s ease;
+}
+
+.has-submenu:hover .submenu {
+  max-height: 200px;
+}
+
+.submenu a {
+  display: block;
+  padding: 10px 16px;
+  color: #94a3b8;
+  font-size: 14px;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: 0.3s ease;
+}
+
+.submenu a:hover {
+  color: #e5e7eb;
+  border-left: 2px solid #38bdf8;
+  background: rgba(255,255,255,0.04);
+}

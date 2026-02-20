@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista Nominal</title>
+
+    <link rel="stylesheet" href="/assets/css/menu.css" />
+    <link rel="stylesheet" href="/assets/css/listaNominal.css" />
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <div id="menu-container"></div>
+    <div id="main-content">
+        <div class="wrapper">
+            <h1>Qualidade - Lista Nominal</h1>
+            <div class="filtros">
+                <div class="campo">
+                    <label>Competência</label>
+                    <select id="competenciaSelect">
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Indicador</label>
+                    <select id="indicadorSelect" disabled>
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+                <button id="btnAnalisar">Analisar</button>
+            </div>
+            <div id="resultadoAnalise" class="analise-container"></div>
+            
+        </div>
+        
+        <!-- Botão flutuante -->
+        <button id="btnDicionario" class="floating-btn">📖 Dicionário</button>
+        <!-- Pop-up do dicionário -->
+        <div id="popupDicionario" class="popup-dicionario">
+            <div class="popup-header">
+                <h2>Dicionário</h2>
+            </div>
+            <div id="popupConteudo"></div>
+        </div>
+
+    </div>
+    
+    <script>lucide.createIcons();</script>
+    <script src="/assets/menu/menu.js"></script>
+    <script src="/assets/scripts/listaNominal.js"></script>
+
+</body>
+
+</html>

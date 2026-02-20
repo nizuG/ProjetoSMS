@@ -1,0 +1,326 @@
+/* ================= CONTEÚDO PRINCIPAL ================= */
+#main-content {
+    flex: 1;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column; /* o conteúdo cresce verticalmente */
+    gap: 30px;
+    margin-left: 70px; /* espaço do menu */
+    min-height: 100vh;
+    overflow: visible; /* permite scroll da página */
+    align-items: center; /* centraliza horizontalmente */
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 1400px; /* define limite para centralização */
+    margin-bottom: 50px;
+}
+
+@media screen and (max-width: 1220px) {
+    #main-content {
+        margin-left: 0;
+        padding: 40px 10px;
+    }
+    .wrapper {
+        max-width: 500px;
+    }
+}
+
+
+h1 {
+    margin-bottom: 40px;
+    color: #e5e7eb;
+}
+
+/* ================= FILTROS ================= */
+.filtros {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 200px;
+}
+
+label {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #e5e7eb;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ================= BOTÃO ================= */
+#btnAnalisar {
+    height: 36px;
+    padding: 0 20px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    align-self: flex-end;
+}
+
+#btnAnalisar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+/* Botão flutuante */
+.floating-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 18px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    z-index: 1000;
+    transition: 0.2s;
+}
+
+.floating-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ================= POP-UP DICIONÁRIO ================= */
+.popup-dicionario {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 1000px;
+    max-height: 100vh;
+    background: #0f172a;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    z-index: 999;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    
+}
+
+.popup-dicionario.show {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-bottom: 1px solid #334155;
+}
+
+.popup-header h2 {
+    font-size: 20px;
+    color: #e5e7eb;
+}
+
+#popupConteudo {
+    padding: 12px 16px;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 18px;
+}
+
+#popupConteudo table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    min-width: 500px;
+}
+
+#popupConteudo th, #popupConteudo td {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: #e5e7eb;
+    border-bottom: 1px solid #1e293b;
+}
+
+#popupConteudo thead {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    top: 0;
+    z-index: 2;
+}
+
+#popupConteudo tbody tr:nth-child(even) td {
+    background-color: #111827;
+}
+
+#popupConteudo tbody tr:nth-child(odd) td {
+    background-color: #0f172a;
+}
+
+#popupConteudo tbody tr:hover {
+    background: rgba(37, 99, 235, 0.15);
+    color: #ffffff;
+    transition: 0.2s;
+}
+
+/* Scroll personalizado do popup */
+#popupConteudo::-webkit-scrollbar {
+    width: 8px;
+}
+
+#popupConteudo::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-radius: 8px;
+}
+
+#popupConteudo::-webkit-scrollbar-thumb {
+    background: #2563eb;
+    border-radius: 8px;
+}
+
+/* ================= ANÁLISE ================= */
+.analise-container {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #0f172a;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    color: #e5e7eb;
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+}
+
+.analise-container.ativo {
+    display: block;    
+}
+
+.analise-container h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.barras-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.barra-progresso-item {
+    flex: 1 1 150px;
+}
+
+.barra-titulo {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #e5e7eb;
+}
+
+.barra-fundo {
+    width: 100%;
+    height: 16px;
+    background-color: #334155;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.barra-preenchida {
+    height: 100%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-radius: 8px 0 0 8px;
+    transition: width 0.5s ease;
+}
+
+.barra-percentual {
+    font-size: 0.8rem;
+    margin-top: 2px;
+    text-align: right;
+    color: #f1f5f9;
+}
+
+/* ================= TABELA COMPLETA ================= */
+.scroll-tabela {
+    max-height: none; /* permite que a tabela expanda */
+    overflow: visible;
+    margin-top: 10px;
+    border-radius: 12px;
+}
+
+.tabela-completa {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto; /* centraliza a tabela */
+    border-collapse: collapse;
+    background-color: #1e293b;
+    color: #e5e7eb;
+}
+
+.tabela-completa th,
+.tabela-completa td {
+    padding: 10px 15px;
+    text-align: left;
+}
+
+.tabela-completa th {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+}
+
+.tabela-completa tr:nth-child(even) {
+    background-color: #0f172a;
+}
+
+.tabela-completa tr:hover {
+    background-color: #334155;
+}
+
+/* ================= PAGINAÇÃO ================= */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.paginacao button {
+    background-color: #2563eb;
+    border: none;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.paginacao button:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ================= BODY ================= */
+body {
+    min-height: 100vh;
+    overflow-y: auto; /* garante scroll da página */
+}
