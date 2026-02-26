@@ -17,10 +17,61 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 db.serialize(() => {
   // GARANTIR ESTRUTURA ATUAL
-//  db.run(`DROP TABLE IF EXISTS arquivos`);
-//  db.run(`DROP TABLE IF EXISTS dados_importados`);
-//  db.run(`DROP TABLE IF EXISTS dicionario`);
+  //  db.run(`DROP TABLE IF EXISTS arquivos`);
+  //  db.run(`DROP TABLE IF EXISTS dados_importados`);
+  //  db.run(`DROP TABLE IF EXISTS dicionario`);
+  //  db.run(`DROP TABLE IF EXISTS notaquadrimestre`);
+  //  db.run(`DROP TABLE IF EXISTS notas_vinculo`);
+  //  db.run(`DROP TABLE IF EXISTS notas_vinculo_mes`);
+  // db.run(`DROP TABLE IF EXISTS notasmes`);
 
+  db.run(`
+    CREATE TABLE IF NOT EXISTS notas_vinculo (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        quadrimestre TEXT NOT NULL,
+        cnes TEXT NOT NULL,
+        estabelecimento TEXT,
+        ine TEXT,
+        nome_equipe TEXT,
+        dimensao_cadastro REAL NOT NULL,
+        dimensao_acompanhamento REAL NOT NULL,
+        nota_final REAL NOT NULL,
+        classificacao_final TEXT NOT NULL
+    )
+`);
+
+
+    db.run(`
+    CREATE TABLE IF NOT EXISTS notasmes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        competencia TEXT NOT NULL,
+        indicador TEXT NOT NULL,
+        cnes TEXT NOT NULL,
+        estabelecimento TEXT,
+        ine TEXT,
+        nome_equipe TEXT,
+        nota_final REAL NOT NULL
+    )
+`);
+
+
+
+
+    db.run(`
+    CREATE TABLE IF NOT EXISTS notas_vinculo_mes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        competencia TEXT NOT NULL,
+        cnes TEXT NOT NULL,
+        estabelecimento TEXT,
+        ine TEXT,
+        nome_equipe TEXT,
+        parametro_populacional REAL NOT NULL,
+        pessoas_cadastradas REAL NOT NULL,
+        total_acompanhados REAL NOT NULL,
+        total_vinculados REAL NOT NULL,
+        nota_final REAL NOT NULL
+    )
+`);
 
   db.run(`
        CREATE TABLE IF NOT EXISTS arquivos (
@@ -52,6 +103,19 @@ db.serialize(() => {
             FOREIGN KEY (arquivo_id) REFERENCES arquivos(id)
         )
     `);
+
+  db.run(`
+        CREATE TABLE IF NOT EXISTS notaquadrimestre (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            quadrimestre TEXT,
+            cnes TEXT,
+            estabelecimento TEXT,
+            ine TEXT,
+            nome_equipe TEXT,
+            nota_final REAL,
+            classificacao_final TEXT
+        )
+`);
 
   console.log("Estrutura recriada com sucesso.");
 });
