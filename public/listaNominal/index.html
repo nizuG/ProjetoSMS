@@ -31,12 +31,24 @@
                         <option value="">Selecione</option>
                     </select>
                 </div>
+                <div class="campo">
+                    <label for="ineSelect">Equipe (INE)</label>
+                    <select id="ineSelect" disabled>
+                        <option value="todos">Todos</option>
+                    </select>
+                </div>
+                <div id="tooltip" style="display: none;"></div>
                 <button id="btnAnalisar">Analisar</button>
             </div>
+            <div class="busca-tabela-container">
+                <div class="busca-tabela">
+                    <input type="text" id="buscaCpfTabela" placeholder="Buscar por CPF..." />
+                </div>
+            </div>
             <div id="resultadoAnalise" class="analise-container"></div>
-            
+
         </div>
-        
+
         <!-- Botão flutuante -->
         <button id="btnDicionario" class="floating-btn">📖 Dicionário</button>
         <!-- Pop-up do dicionário -->
@@ -48,7 +60,7 @@
         </div>
 
     </div>
-    
+
     <script>lucide.createIcons();</script>
     <script src="/assets/menu/menu.js"></script>
     <script src="/assets/scripts/listaNominal.js"></script>

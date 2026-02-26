@@ -319,6 +319,66 @@ select {
     cursor: not-allowed;
 }
 
+/* ================= BUSCA CPF ================= */
+
+.busca-tabela-container {
+  display: none;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+
+.busca-tabela {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.busca-tabela input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #e5e7eb;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.busca-tabela input::placeholder {
+  color: #94a3b8;
+}
+
+.busca-tabela input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  background: #0f172a;
+}
+
+/* Ícone opcional */
+.busca-tabela::before {
+  content: "🔎";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+#tooltip {
+  position: absolute;
+  background: #0b0031;
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  opacity: 0.9;
+}
+
 /* ================= BODY ================= */
 body {
     min-height: 100vh;

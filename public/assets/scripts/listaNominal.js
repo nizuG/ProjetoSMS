@@ -9,10 +9,38 @@ const resultadoAnalise = document.getElementById("resultadoAnalise");
 const html = document.documentElement;
 const resultado = document.getElementById("resultado");
 const btnListaNominal = document.getElementById("btnListaNominal");
+const ineSelect = document.getElementById("ineSelect");
+ineSelect.disabled = true;
+const buscaCpfInput = document.getElementById("buscaCpfTabela");
+const buscaTabelaContainer = document.querySelector(".busca-tabela-container");
+const tooltip = document.getElementById("tooltip");
 let paginaAtual = 1;
 const itensPorPagina = 10;
-
 let dados = [];
+const equipes = [
+  { codigo: "0002233843", nome: "EAP CSII" },
+  { codigo: "0002396068", nome: "EAP CSII 02" },
+  { codigo: "0002396033", nome: "ESF CSII" },
+  { codigo: "0001695223", nome: "ESF Estação" },
+  { codigo: "0002555913", nome: "ESF Estação 02" },
+  { codigo: "0002317206", nome: "EAP Estação 02" },
+  { codigo: "0002143143", nome: "EAP Estação" },
+  { codigo: "0002317184", nome: "EAP Mathias 02" },
+  { codigo: "0002140004", nome: "EAP Mathias" },
+  { codigo: "0002555905", nome: "ESF Mathias 02" },
+  { codigo: "0001695231", nome: "ESF Mathias" },
+  { codigo: "0002426005", nome: "ESF Santana" },
+  { codigo: "0000349186", nome: "ESF Caporanga" },
+  { codigo: "0000349151", nome: "ESF Aureliana 02" },
+  { codigo: "0000349178", nome: "ESF Aureliana" },
+  { codigo: "0000349100", nome: "ESF Fabiano 02" },
+  { codigo: "0000349097", nome: "ESF Fabiano" },
+  { codigo: "0001603957", nome: "ESF São João" },
+  { codigo: "0001520857", nome: "ESF Parque" },
+];
+let dadosNormalizados = [];
+let dadosBase = [];
+let dadosFiltrados = [];
 
 async function carregarOpcoes() {
   const response = await fetch("/api/lista-nominal/opcoes");
@@ -30,11 +58,19 @@ async function carregarOpcoes() {
 
 indicadorSelect.addEventListener("change", () => {
   resultadoAnalise.classList.remove("ativo");
+  buscaTabelaContainer.style.display = "none";
+  ineSelect.disabled = true;
+  ineSelect.innerHTML = '<option value="todos">Todos</option>';
 });
 
 competenciaSelect.addEventListener("change", () => {
   indicadorSelect.innerHTML = '<option value="">Selecione</option>';
   resultadoAnalise.classList.remove("ativo");
+  buscaTabelaContainer.style.display = "none";
+  ineSelect.disabled = true;
+  ineSelect.innerHTML = '<option value="todos">Todos</option>';
+  tooltip.style.opacity = "1";
+
 
   const competenciaSelecionada = competenciaSelect.value;
 
@@ -73,9 +109,6 @@ btnDicionario.addEventListener("click", () => {
   popupDicionario.classList.toggle("show");
 });
 
-// Ao clicar em analisar, busca dados, renderiza no pop-up e abre ele
-let dadosNormalizados = [];
-
 btnAnalisar.addEventListener("click", async () => {
   const competencia = competenciaSelect.value;
   const indicador = indicadorSelect.value;
@@ -88,48 +121,109 @@ btnAnalisar.addEventListener("click", async () => {
   popupConteudo.innerHTML = "Carregando...";
 
   try {
-    // 1️⃣ Exibe o dicionário
+    // 1️⃣ Dicionário
     const responseDic = await fetch(
-      `/api/lista-nominal/dicionario?competencia=${encodeURIComponent(competencia)}&indicador=${encodeURIComponent(indicador)}`,
+      `/api/lista-nominal/dicionario?competencia=${encodeURIComponent(competencia)}&indicador=${encodeURIComponent(indicador)}`
     );
     const dadosDicionario = await responseDic.json();
     renderizarPopupTabela(dadosDicionario, indicador);
 
-    // 2️⃣ Busca e normaliza os dados
+    // 2️⃣ Dados
     const responseDados = await fetch(
-      `/api/lista-nominal/analise?competencia=${encodeURIComponent(competencia)}&indicador=${encodeURIComponent(indicador)}`,
+      `/api/lista-nominal/analise?competencia=${encodeURIComponent(competencia)}&indicador=${encodeURIComponent(indicador)}`
     );
     const dadosBrutos = await responseDados.json();
 
-    dadosNormalizados = dadosBrutos.map((item) => {
-      try {
-        const parsed = JSON.parse(item.conteudo);
-        const normalized = {};
-        Object.entries(parsed).forEach(([k, v]) => {
-          normalized[k.trim()] = v ? v.trim() : "";
-        });
-        return normalized;
-      } catch {
-        return {};
-      }
-    });
+    dadosBase = dadosBrutos
+      .map((item) => {
+        try {
+          const parsed = JSON.parse(item.conteudo);
+          const normalized = {};
+          Object.entries(parsed).forEach(([k, v]) => {
+            normalized[k.trim()] = v ? v.trim() : "";
+          });
+          return normalized;
+        } catch {
+          return null;
+        }
+      })
+      .filter((item) => item !== null);
 
-    console.log("Dados normalizados:", dadosNormalizados);
+    console.log("Base completa:", dadosBase);
 
-    // 3️⃣ Calcula porcentagens (ignorando DN.*)
-    const porcentagens = calcularPorcentagem(dadosNormalizados, indicador);
-    renderizarPorcentagens(porcentagens);
+    // 3️⃣ Carrega INEs apenas com base completa
+    carregarIneOptions(dadosBase);
+    ineSelect.disabled = false;
 
-    // 4️⃣ Reseta paginação
-    paginaAtual = 1;
-    renderizarTabelaCompleta(dadosNormalizados, paginaAtual);
-    resultadoAnalise.classList.add("ativo");
-    paginaAtual = 1; // reinicia na primeira página
+    // 4️⃣ Aplica filtro
+    aplicarFiltroINE(indicador);
+
+    // 🔹 ZERA CPF
+    buscaCpfInput.value = "";
+
+    // exibe filtro cpf
+    buscaTabelaContainer.style.display = "flex";
+    tooltip.style.opacity = "0";
+
   } catch (error) {
     popupConteudo.innerHTML = "Erro ao buscar dados.";
     console.error(error);
   }
 });
+
+ineSelect.addEventListener("change", () => {
+  aplicarFiltroINE(indicadorSelect.value);
+  buscaCpfInput.value = "";
+});
+
+ineSelect.innerHTML = '<option value="todos">Todos</option>';
+
+// Pega os códigos únicos dos dados carregados
+function carregarIneOptions(dadosFonte) {
+  if (!dadosFonte || dadosFonte.length === 0) return;
+
+  const inesUnicos = [
+    ...new Set(
+      dadosFonte
+        .map((d) => d.INE)
+        .filter((ine) => ine && ine.trim() !== "")
+    ),
+  ];
+
+  
+
+  inesUnicos.forEach((codigo) => {
+    const equipe = equipes.find((e) => e.codigo === codigo);
+
+    const option = document.createElement("option");
+    option.value = codigo;
+    option.textContent = equipe ? equipe.nome : codigo;
+
+    ineSelect.appendChild(option);
+  });
+
+  console.log("INEs carregados:", inesUnicos);
+}
+
+function aplicarFiltroINE(indicador) {
+  const ineValor = ineSelect.value;
+
+  if (ineValor === "todos") {
+    dadosFiltrados = [...dadosBase];
+  } else {
+    dadosFiltrados = dadosBase.filter(
+      (item) => item["INE"] === ineValor
+    );
+  }
+  console.log("Filtrado:", dadosFiltrados);
+
+  const porcentagens = calcularPorcentagem(dadosFiltrados, indicador);
+  renderizarPorcentagens(porcentagens);
+
+  paginaAtual = 1;
+  renderizarTabelaCompleta(dadosFiltrados, paginaAtual);
+  resultadoAnalise.classList.add("ativo");
+}
 
 function normalizarTexto(texto) {
   return texto
@@ -375,8 +469,15 @@ function renderizarPorcentagens(porcentagens) {
 
 function renderizarTabelaCompleta(dados, pagina) {
   const container = document.getElementById("resultadoAnalise");
+  const msg = container.querySelector(".msg-vazio");
+  if (msg) msg.remove();
   if (!dados || dados.length === 0) {
-    container.innerHTML += "<p>Nenhum dado para exibir.</p>";
+    const p = document.createElement("p");
+    p.classList.add("msg-vazio");
+    p.textContent = "Nenhum dado para exibir.";
+    container.appendChild(p);
+    const tabelaExistente = container.querySelector(".scroll-tabela");
+    if (tabelaExistente) tabelaExistente.remove();
     return;
   }
 
@@ -394,49 +495,46 @@ function renderizarTabelaCompleta(dados, pagina) {
   let tabela =
     '<div class="scroll-tabela"><table class="tabela-completa"><thead><tr>';
   // Define as colunas que queremos mostrar
-  const colunasPermitidas = [
-  "CPF",
-  "CNS",
-  "Nascimento",
-];
+  const colunasPermitidas = ["CPF", "CNS", "Nascimento"];
 
-const colunasfinais = ["GESTANTE E PUERPERA ATIVA",
-  "GESTANTE E PUERPERA FINALIZADA",
-  "COM 2 ANOS",
-  "ATE 2 ANOS",
-];
-// Pega os indicadores presentes nos dados (NM.A, NM.B, ou A, B, C...)
-const todosIndicadores = Object.keys(dados[0]).filter(
-  (c) => c.match(/^NM\.[A-Z]$/) || c.match(/^[A-Z]$/)
-);
+  const colunasfinais = [
+    "GESTANTE E PUERPERA ATIVA",
+    "GESTANTE E PUERPERA FINALIZADA",
+    "COM 2 ANOS",
+    "ATE 2 ANOS",
+  ];
+  // Pega os indicadores presentes nos dados (NM.A, NM.B, ou A, B, C...)
+  const todosIndicadores = Object.keys(dados[0]).filter(
+    (c) => c.match(/^NM\.[A-Z]$/) || c.match(/^[A-Z]$/),
+  );
 
-// Junta as colunas que serão exibidas
-const colunas = [...colunasPermitidas, ...todosIndicadores, ...colunasfinais];
+  // Junta as colunas que serão exibidas
+  const colunas = [...colunasPermitidas, ...todosIndicadores, ...colunasfinais];
 
-tabela += "<thead><tr>";
+  tabela += "<thead><tr>";
 
-// Cria os <th> para todas as colunas que existem no primeiro registro
-colunas.forEach((col) => {
-  if (col in dados[0]) {
-    tabela += `<th>${col}</th>`;
-  }
-});
-
-tabela += "</tr></thead><tbody>";
-
-// Cria as linhas da página
-dadosPagina.forEach((item) => {
-  tabela += "<tr>";
+  // Cria os <th> para todas as colunas que existem no primeiro registro
   colunas.forEach((col) => {
     if (col in dados[0]) {
-    tabela += `<td>${item[col] !== undefined ? item[col] : ""}</td>`;
+      tabela += `<th>${col}</th>`;
     }
   });
-  tabela += "</tr>";
-});
 
-tabela += "</tbody></table></div>";
-container.innerHTML += tabela;
+  tabela += "</tr></thead><tbody>";
+
+  // Cria as linhas da página
+  dadosPagina.forEach((item) => {
+    tabela += "<tr>";
+    colunas.forEach((col) => {
+      if (col in dados[0]) {
+        tabela += `<td>${item[col] !== undefined ? item[col] : ""}</td>`;
+      }
+    });
+    tabela += "</tr>";
+  });
+
+  tabela += "</tbody></table></div>";
+  container.innerHTML += tabela;
 
   // Paginação
   let paginacao = document.createElement("div");
@@ -461,5 +559,36 @@ container.innerHTML += tabela;
     }
   };
 
-  container.scrollIntoView({ behavior: "smooth" });
+  //container.scrollIntoView({ behavior: "smooth" });
 }
+
+function aplicarFiltroTabela() {
+  const cpfBusca = buscaCpfInput.value.replace(/\D/g, "");
+
+  let dadosParaTabela = dadosFiltrados;
+
+  if (cpfBusca) {
+    dadosParaTabela = dadosFiltrados.filter((item) =>
+      item.CPF?.replace(/\D/g, "").includes(cpfBusca)
+    );
+  }
+
+  paginaAtual = 1;
+  renderizarTabelaCompleta(dadosParaTabela, paginaAtual);
+}
+
+buscaCpfInput.addEventListener("input", aplicarFiltroTabela);
+
+ineSelect.addEventListener("mousemove", (e) => {
+  tooltip.style.display = "block";
+  tooltip.style.left = e.pageX + 10 + "px";
+  tooltip.style.top = e.pageY + 10 + "px";
+  tooltip.textContent = "Para filtrar por equipe, clique em \"Analisar\"";
+});
+
+ineSelect.addEventListener("mouseleave", () => {
+  tooltip.style.display = "none";
+});
+
+
+

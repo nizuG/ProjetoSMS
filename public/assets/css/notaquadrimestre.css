@@ -1,0 +1,218 @@
+/* ================= ÁREA PRINCIPAL ================= */
+
+#main-content {
+  margin-left: 70px;
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px;
+  transition: margin-left 0.35s ease;
+  max-width: 1200px;
+}
+
+.sidebar:hover ~ #main-content {
+  margin-left: 260px;
+}
+
+/* ================= GRID ================= */
+
+#containerTabelas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  align-items: start; /* IMPORTANTE */
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1200px) {
+  #containerTabelas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  #containerTabelas {
+    grid-template-columns: 1fr;
+  }
+
+  #main-content {
+    margin-left: 0;
+  }
+}
+
+/* ================= CARD ================= */
+
+.card-quadrimestre {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 18px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s ease;
+}
+
+.card-quadrimestre:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+}
+
+/* HEADER */
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* BOTÃO */
+
+.btn-toggle {
+  background: transparent;
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 13px;
+  margin-left: 20px;
+}
+
+/* ===== VINCULO ===== */
+
+
+#containerVinculo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  align-items: start; /* IMPORTANTE */
+  width: 100%;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1200px) {
+  #containerVinculo {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  #containerVinculo {
+    grid-template-columns: 1fr;
+  }
+
+  #main-content {
+    margin-left: 0;
+  }
+}
+
+.card-vinculo {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 18px;
+  padding: 26px;
+  transition: 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.conteudo-vinculo {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.card-vinculo:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+}
+
+.conteudo-vinculo.ativo {
+  max-height: 900px;
+  margin-top: 20px;
+}
+
+.btn-toggle-vinculo {
+  background: transparent;
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 13px;
+  margin-left: 20px;
+}
+
+.btn-toggle-vinculo:hover {
+  background: #38bdf8;
+  color: #020617;
+}
+
+.btn-toggle:hover {
+  background: #38bdf8;
+  color: #020617;
+}
+
+/* ================= CONTEÚDO ================= */
+
+.card-quadrimestre .conteudo-notas {
+  display: none;
+  margin-top: 20px;
+}
+
+.card-quadrimestre .conteudo-notas.ativo {
+  display: block;
+}
+
+/* ================= TABELA ================= */
+
+.tabela-notas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabela-notas th,
+.tabela-notas td {
+  padding: 10px;
+  text-align: left;
+}
+
+.tabela-notas th {
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.tabela-notas tr:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* ================= BADGES ================= */
+
+.media-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.media-regular { background: #f97316; color: #fff; }
+.media-suficiente { background: #eab308; color: #000000; }
+.media-bom { background: #22c55e; color: #fff; }
+.media-otimo { background: #3b82f6; color: #fff; }
+
+.nota-regular { background: #f97316; color: #fff; }
+.nota-suficiente { background: #eab308; color: #000000; }
+.nota-bom { background: #22c55e; color: #fff; }
+.nota-otimo { background: #3b82f6; color: #fff; }
